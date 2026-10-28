@@ -104,7 +104,129 @@ Arguments disponibles:
 - `--play`: lit directement l'audio dans le terminal.
 - `--out` ou `-o`: chemin du fichier MP3 produit.
 
-## Architecture du projet
+## Architecture systeme
+
+### Schema Eraser (Diagram-as-Code)
+
+Le code source du diagramme est disponible dans [docs/architecture.eraser](file:///C:/Users/Admin/Desktop/servitudes/text2speech/docs/architecture.eraser). Vous pouvez le coller directement dans l'editeur [Eraser.io](https://app.eraser.io) (mode Diagram-as-Code) pour generer et modifier visuellement la vue d'ensemble.
+
+```eraser
+// Text2Speech - Architecture globale (Eraser DSL)
+typeface clean
+colorMode bold
+direction right
+
+Clients [color: blue, icon: user] {
+  Navigateur Web [icon: globe, label: "Navigateur Web (HTML5 Audio)"]
+  Windows Explorer [icon: monitor, label: "Explorateur Windows (Clic droit)"]
+}
+
+Routing [color: purple, icon: cloud] {
+  Cloud Run Ingress [icon: google-cloud, label: "Google Cloud Run (HTTPS :8080)"]
+  Cloudflare Tunnel [icon: cloudflare, label: "Tunnel Cloudflare (localhost:9001)"]
+}
+
+App Container [color: green, icon: server] {
+  Streamlit UI [icon: streamlit, label: "Interface Streamlit (app.py)"]
+  Mini Player [icon: terminal, label: "Lecteur Tkinter / CLI (launcher.py)"]
+  Doc Extractor [icon: file-text, label: "Extracteur (pypdf, python-docx)"]
+  TTS Engine [icon: speaker, label: "Moteur TTS (Edge-TTS + Silences MP3)"]
+}
+
+AI Providers [color: orange, icon: cpu] {
+  Gemini [icon: google, label: "Google Gemini (BYOK gratuit)"]
+  OpenAI Mistral [icon: server, label: "OpenAI / Mistral / Anthropic"]
+  Antigravity CLI [icon: terminal, label: "Antigravity CLI (agy local)"]
+  Local Fallback [icon: database, label: "Heuristique TF-IDF (100% Hors-ligne)"]
+}
+
+Edge TTS Service [icon: mic, label: "Microsoft Neural Edge-TTS (fr-FR-HenriNeural)"]
+
+Navigateur Web > Cloud Run Ingress: Requete HTTPS
+Navigateur Web > Cloudflare Tunnel: Requete distante
+Windows Explorer > Mini Player: Lancement direct
+
+Cloud Run Ingress > Streamlit UI
+Cloudflare Tunnel > Streamlit UI
+
+Streamlit UI > Doc Extractor: Extraction texte brut
+Mini Player > Doc Extractor: Extraction texte brut
+
+Doc Extractor > Gemini: Resume condense (Cle API)
+Doc Extractor > OpenAI Mistral: Resume condense (Cle API)
+Doc Extractor > Antigravity CLI: Resume condense (Local)
+Doc Extractor > Local Fallback: Extraction frequencielle
+
+Gemini > TTS Engine: Texte condense
+OpenAI Mistral > TTS Engine: Texte condense
+Antigravity CLI > TTS Engine: Texte condense
+Local Fallback > TTS Engine: Texte nettoye
+
+TTS Engine > Edge TTS Service: Streaming audio neuronal
+Edge TTS Service > TTS Engine: Flux MP3 24kHz
+
+TTS Engine > Navigateur Web: Restitution audio avec playbackRate direct
+TTS Engine > Mini Player: Restitution audio avec controle clavier
+```
+
+### Vue textuelle fonctionnelle
+
+```mermaid
+flowchart LR
+    subgraph Clients["Clients"]
+        W["Navigateur Web (HTML5)"]
+        E["Explorateur Windows (Clic droit)"]
+    end
+
+    subgraph Reseau["Exposition et Passerelle"]
+        CR["Google Cloud Run (Port 8080)"]
+        CF["Tunnel Cloudflare (Port 9001)"]
+    end
+
+    subgraph Coeur["Moteur Applicatif"]
+        ST["Streamlit UI (src/app.py)"]
+        MP["Mini-Lecteur Tkinter (src/audio_player.py)"]
+        EXT["Extracteur de documents (src/extractor.py)"]
+        TTS["Moteur de synthese (src/tts_engine.py)"]
+    end
+
+    subgraph IA["Synthese et Condensation"]
+        direction TB
+        G["Google Gemini (BYOK gratuit)"]
+        OA["OpenAI / Mistral / Anthropic"]
+        AGY["CLI Antigravity (Local 'agy')"]
+        H["Heuristique locale (100% hors-ligne)"]
+    end
+
+    subgraph Voix["Synthese Vocale Neuronale"]
+        ED["Microsoft Edge-TTS (fr-FR-HenriNeural)"]
+    end
+
+    W --> CR
+    W --> CF
+    CR --> ST
+    CF --> ST
+    E --> MP
+
+    ST --> EXT
+    MP --> EXT
+
+    EXT --> G
+    EXT --> OA
+    EXT --> AGY
+    EXT --> H
+
+    G --> TTS
+    OA --> TTS
+    AGY --> TTS
+    H --> TTS
+
+    TTS <--> ED
+    TTS --> W
+    TTS --> MP
+```
+
+## Structure des fichiers du projet
 
 ```
 text2speech/

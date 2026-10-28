@@ -1,0 +1,69 @@
+// =============================================================
+// Text2Speech - Architecture globale
+// Coller ce code dans app.eraser.io > Diagram as Code
+// =============================================================
+
+typeface clean
+colorMode bold
+direction right
+
+// ------- ACCES UTILISATEUR -------
+Clients [color: blue, icon: user] {
+  Navigateur Web [icon: globe, label: "Navigateur Web (HTML5 Audio)"]
+  Windows Explorer [icon: monitor, label: "Explorateur Windows (Clic droit)"]
+}
+
+// ------- COUCHE EXPOSITION & ROUTAGE -------
+Routing [color: purple, icon: cloud] {
+  Cloud Run Ingress [icon: google-cloud, label: "Google Cloud Run (HTTPS)"]
+  Cloudflare Tunnel [icon: cloudflare, label: "Tunnel Cloudflare (localhost:9001)"]
+}
+
+// ------- COEUR APPLICATIF -------
+App Container [color: green, icon: server] {
+  Streamlit UI [icon: streamlit, label: "Interface Streamlit (app.py)"]
+  Mini Player [icon: terminal, label: "Lecteur Tkinter / CLI (launcher.py)"]
+  Doc Extractor [icon: file-text, label: "Extracteur (pypdf, python-docx)"]
+  TTS Engine [icon: speaker, label: "Moteur TTS (Edge-TTS + Silences MP3)"]
+}
+
+// ------- FOURNISSEURS RESUME & IA -------
+AI Providers [color: orange, icon: cpu] {
+  Gemini [icon: google, label: "Google Gemini (BYOK gratuit)"]
+  OpenAI Mistral [icon: server, label: "OpenAI / Mistral / Anthropic"]
+  Antigravity CLI [icon: terminal, label: "Antigravity CLI (agy local)"]
+  Local Fallback [icon: database, label: "Heuristique TF-IDF (100% Hors-ligne)"]
+}
+
+// ------- SYNTHESE VOCALE DISTANTE -------
+Edge TTS Service [icon: mic, label: "Microsoft Neural Edge-TTS (fr-FR-HenriNeural)"]
+
+// =============================================================
+// FLUX ET CONNEXIONS
+// =============================================================
+
+Navigateur Web > Cloud Run Ingress: Requete HTTPS [label: "Port 8080"]
+Navigateur Web > Cloudflare Tunnel: Requete distante [label: "Port 9001"]
+Windows Explorer > Mini Player: Lancement direct [label: "Arguments CLI"]
+
+Cloud Run Ingress > Streamlit UI
+Cloudflare Tunnel > Streamlit UI
+
+Streamlit UI > Doc Extractor: Extraction texte brut
+Mini Player > Doc Extractor: Extraction texte brut
+
+Doc Extractor > Gemini: Resume condense (Cle API)
+Doc Extractor > OpenAI Mistral: Resume condense (Cle API)
+Doc Extractor > Antigravity CLI: Resume condense (Local)
+Doc Extractor > Local Fallback: Extraction frequencielle
+
+Gemini > TTS Engine: Texte condense
+OpenAI Mistral > TTS Engine: Texte condense
+Antigravity CLI > TTS Engine: Texte condense
+Local Fallback > TTS Engine: Texte nettoye
+
+TTS Engine > Edge TTS Service: Streaming audio neuronal
+Edge TTS Service > TTS Engine: Flux MP3 24kHz
+
+TTS Engine > Navigateur Web: Restitution audio avec playbackRate direct
+TTS Engine > Mini Player: Restitution audio avec controle clavier
