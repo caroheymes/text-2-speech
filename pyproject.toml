@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "text2speech"
+version = "0.1.0"
+description = "Lecteur vocal accessible par synthese vocale"
+authors = [{ name = "Henri" }]
+dependencies = [
+    "streamlit>=1.35.0",
+    "edge-tts>=6.1.0",
+    "pypdf>=4.0.0",
+    "python-docx>=1.1.0",
+    "pygame>=2.5.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
