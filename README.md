@@ -2,7 +2,9 @@
 
 Application d'assistance a la lecture concue pour les personnes eprouvant des difficultes de dechiffrage ou de concentration visuelle (fatigue cognitive, troubles de l'attention, dyslexie). Le systeme transforme n'importe quel document depose en un flux audio naturel et intelligible, pilote en direct a la cadence souhaitee.
 
-L'outil offre deux modes d'interaction: une interface web Streamlit ergonomique et une commande directe par clic droit dans l'explorateur Windows.
+L'application est disponible en ligne sur https://text2speech-948219637422.europe-west1.run.app
+
+L'outil offre deux modes d'interaction: une interface web Streamlit ergonomique (en ligne ou en local) et une commande directe par clic droit dans l'explorateur Windows.
 
 ## Fonctionnalites
 
