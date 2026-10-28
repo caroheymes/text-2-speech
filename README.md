@@ -106,9 +106,11 @@ Arguments disponibles:
 
 ## Architecture systeme
 
+![Architecture Text2Speech](docs/architecture.png)
+
 ### Schema Eraser (Diagram-as-Code)
 
-Le code source du diagramme est disponible dans [docs/architecture.eraser](file:///C:/Users/Admin/Desktop/servitudes/text2speech/docs/architecture.eraser). Vous pouvez le coller directement dans l'editeur [Eraser.io](https://app.eraser.io) (mode Diagram-as-Code) pour generer et modifier visuellement la vue d'ensemble.
+Le rendu visuel ci-dessus a ete genere via l'API Eraser avec fond transparent. Le fichier source est disponible dans [docs/architecture.eraser](file:///C:/Users/Admin/Desktop/servitudes/text2speech/docs/architecture.eraser). Vous pouvez le coller directement dans l'editeur [Eraser.io](https://app.eraser.io) (mode Diagram-as-Code) pour modifier visuellement les composants.
 
 ```eraser
 // Text2Speech - Architecture globale (Eraser DSL)
