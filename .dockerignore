@@ -1,0 +1,17 @@
+.git
+.gitignore
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+tests
+*.bat
+*.ps1
+brief.md
+prd.md
+DESIGN.md
+EXPERIENCE.md
+launcher.py
+scripts/

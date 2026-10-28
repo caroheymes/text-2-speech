@@ -77,6 +77,16 @@ Pour partager l'application vers un smartphone ou un poste distant:
 2. Double-cliquez sur `partager.bat`.
 3. Le terminal affiche l'adresse publique securisee du type `https://xxxx.trycloudflare.com`.
 
+### Deploiement serverless Google Cloud Run (Scale-to-Zero)
+
+Pour heberger l'application sur Google Cloud Run avec extinction automatique hors usage:
+
+```powershell
+.\deploy_cloud_run.ps1 -Project "VOTRE_PROJET_GCP" -Region "europe-west1"
+```
+
+Le parametre `--min-instances 0` garantit que l'application ne consomme aucune ressource et n'engendre aucun cout lorsqu'elle n'est pas sollicitee. Dès qu'un utilisateur ouvre l'URL publique HTTPS fournie par Google, Cloud Run reveille l'instance en quelques secondes pour traiter la session.
+
 ### Ligne de commande CLI
 
 Le moteur peut etre appele directement pour automatiser la synthese d'un fichier:
